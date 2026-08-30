@@ -132,7 +132,7 @@ export const Settings: React.FC = () => {
           </p>
           
           <Form.List name="pages">
-            {(fields) => (
+            {(fields, { add, remove }) => (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 {fields.map(({ key, name, ...restField }, index) => {
                   const pageName = form.getFieldValue(['pages', name, 'name']);
@@ -160,6 +160,15 @@ export const Settings: React.FC = () => {
                           >
                             Test Connection
                           </Button>
+                          
+                          {fields.length > 1 && (
+                            <Button
+                              size="small"
+                              danger
+                              icon={<DeleteOutlined />}
+                              onClick={() => remove(name)}
+                            />
+                          )}
                         </Space>
                       }
                     >
@@ -202,6 +211,15 @@ export const Settings: React.FC = () => {
                     </Card>
                   );
                 })}
+
+                <Button
+                  type="dashed"
+                  onClick={() => add({ name: '', pageId: '', accessToken: '', status: 'disconnected' })}
+                  block
+                  style={{ color: '#a855f7', borderColor: 'rgba(168, 85, 247, 0.4)', marginTop: '8px' }}
+                >
+                  + Add New Facebook Page
+                </Button>
               </div>
             )}
           </Form.List>
