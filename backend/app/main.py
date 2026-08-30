@@ -18,13 +18,19 @@ storage_service = StorageService()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Start APScheduler
+    # Startup: Start APScheduler if event loop is running
     logger.info("Application starting up...")
-    start_scheduler()
+    try:
+        start_scheduler()
+    except Exception as e:
+        logger.warning(f"Lifespan scheduler startup bypassed: {e}")
     yield
     # Shutdown: Stop APScheduler
     logger.info("Application shutting down...")
-    shutdown_scheduler()
+    try:
+        shutdown_scheduler()
+    except Exception as e:
+        logger.warning(f"Lifespan scheduler shutdown bypassed: {e}")
 
 app = FastAPI(
     title="FB Multi Poster API",

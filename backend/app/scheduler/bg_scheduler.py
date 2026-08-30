@@ -247,12 +247,25 @@ async def process_scheduled_posts():
         logger.info(f"Finished scheduled post {post.get('id')} processing. Moved to history.")
 
 def start_scheduler():
-    if not scheduler.running:
-        scheduler.add_job(process_scheduled_posts, "interval", minutes=1, id="check_scheduled")
-        scheduler.start()
-        logger.info("APScheduler started successfully.")
+    try:
+        if not scheduler.running:
+            try:
+                asyncio.get_running_loop()
+            except RuntimeError:
+                logger.info("No active running event loop for APScheduler. Skipping inline scheduler startup (use run_scheduler.py for background tasks).")
+                return
+
+            scheduler.add_job(process_scheduled_posts, "interval", minutes=1, id="check_scheduled")
+            scheduler.start()
+            logger.info("APScheduler started successfully.")
+    except Exception as e:
+        logger.warning(f"Could not start inline APScheduler: {e}")
 
 def shutdown_scheduler():
-    if scheduler.running:
-        scheduler.shutdown()
-        logger.info("APScheduler shutdown successfully.")
+    try:
+        if scheduler.running:
+            scheduler.shutdown()
+            logger.info("APScheduler shutdown successfully.")
+    except Exception as e:
+        logger.warning(f"Error shutting down scheduler: {e}")
+
