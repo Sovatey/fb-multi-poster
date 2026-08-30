@@ -79,9 +79,10 @@ export const Settings: React.FC = () => {
           storageDir: values.storageDir || "",
         },
         pages: values.pages,
-        youtubeChannels: values.youtubeChannels || [],
+        youtubeChannels: youtubeChannels,
       };
       await api.updateSettings(updatedConfig);
+      await fetchSettings(false);
       notification.success({ message: 'Settings saved successfully' });
     } catch (error) {
       notification.error({ message: 'Failed to update settings' });
@@ -365,10 +366,15 @@ export const Settings: React.FC = () => {
                       type="text" 
                       danger 
                       icon={<DeleteOutlined />} 
-                      onClick={() => {
+                      onClick={async () => {
                         const updated = youtubeChannels.filter((c) => c.channelId !== channel.channelId);
                         setYoutubeChannels(updated);
-                        form.setFieldsValue({ youtubeChannels: updated });
+                        try {
+                          await api.updateSettings({ youtubeChannels: updated });
+                          notification.success({ message: 'YouTube channel disconnected' });
+                        } catch (e) {
+                          notification.error({ message: 'Failed to disconnect channel' });
+                        }
                       }}
                     />
                   </Space>
