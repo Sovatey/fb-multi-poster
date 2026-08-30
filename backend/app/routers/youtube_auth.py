@@ -1,5 +1,5 @@
 import httpx
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from fastapi.responses import RedirectResponse, HTMLResponse
 from app.services.storage_service import StorageService
 from app.services.yt_publisher import YouTubePublisher
@@ -14,8 +14,13 @@ def get_storage():
 def get_yt_publisher():
     return YouTubePublisher()
 
+def get_redirect_uri(request: Request) -> str:
+    scheme = request.headers.get("x-forwarded-proto", request.url.scheme)
+    host = request.headers.get("host", request.url.netloc)
+    return f"{scheme}://{host}/google/callback"
+
 @router.get("/google/auth")
-def google_auth_redirect(storage: StorageService = Depends(get_storage)):
+def google_auth_redirect(request: Request, storage: StorageService = Depends(get_storage)):
     """Redirects the user to Google OAuth Consent Screen."""
     settings = storage.get_settings()
     client_id = settings.get("googleClientId")
@@ -34,7 +39,7 @@ def google_auth_redirect(storage: StorageService = Depends(get_storage)):
         )
         
     import urllib.parse
-    redirect_uri = "http://localhost:8800/google/callback"
+    redirect_uri = get_redirect_uri(request)
     scopes_list = [
         "https://www.googleapis.com/auth/youtube.upload",
         "https://www.googleapis.com/auth/youtube.readonly"
@@ -54,6 +59,7 @@ def google_auth_redirect(storage: StorageService = Depends(get_storage)):
 
 @router.get("/google/callback")
 async def google_auth_callback(
+    request: Request,
     code: str = None,
     error: str = None,
     storage: StorageService = Depends(get_storage),
@@ -106,7 +112,7 @@ async def google_auth_callback(
         "client_secret": client_secret,
         "code": code,
         "grant_type": "authorization_code",
-        "redirect_uri": "http://localhost:8800/google/callback"
+        "redirect_uri": get_redirect_uri(request)
     }
     
     async with httpx.AsyncClient() as client:
