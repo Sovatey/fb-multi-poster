@@ -244,6 +244,13 @@ async def process_scheduled_posts():
         updated_scheduled = [s for s in current_scheduled if s.get("id") != post.get("id")]
         storage_service.save_scheduled(updated_scheduled)
         
+        # Auto-delete video and thumbnail if enabled (default True)
+        settings = storage_service.get_settings()
+        auto_delete = settings.get("autoDeleteAfterPublish", True)
+        if auto_delete and any(r.get("status") == "success" for r in results):
+            storage_service.delete_media(filename)
+            logger.info(f"Auto-deleted scheduled video '{filename}' after publishing.")
+
         logger.info(f"Finished scheduled post {post.get('id')} processing. Moved to history.")
 
 def start_scheduler():

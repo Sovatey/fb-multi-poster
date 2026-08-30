@@ -193,6 +193,12 @@ async def publish_post(
     
     storage.add_history_entry(history_entry)
     
+    # Auto-delete video and thumbnail if enabled in settings (default True for server storage optimization)
+    auto_delete = settings.get("autoDeleteAfterPublish", True)
+    if auto_delete and any(r.get("status") == "success" for r in results):
+        storage.delete_media(video_filename)
+        logger.info(f"Auto-deleted video '{video_filename}' after successful publishing.")
+
     return {"success": True, "results": results, "history": history_entry}
 
 @router.post("/schedule")

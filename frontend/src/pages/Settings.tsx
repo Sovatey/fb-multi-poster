@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Form, Input, Button, Space, Tag, InputNumber, notification, Tabs, Divider, Row, Col } from 'antd';
+import { Card, Form, Input, Button, Space, Tag, InputNumber, notification, Tabs, Divider, Row, Col, Switch } from 'antd';
 import { SettingOutlined, GlobalOutlined, KeyOutlined, YoutubeOutlined, DeleteOutlined, LinkOutlined } from '@ant-design/icons';
 import { api, API_BASE_URL } from '../services/api';
 import type { AppConfig, FacebookPage, YouTubeChannel } from '../types';
@@ -406,14 +406,14 @@ export const Settings: React.FC = () => {
           <h3 style={{ color: '#fff', marginTop: 0 }}>General Settings</h3>
           
           <Form.Item
-            name="maxVideoSizeMb"
-            label={<span style={{ color: 'rgba(255,255,255,0.65)' }}>Maximum Video Size (MB)</span>}
-            rules={[{ required: true, message: 'Please specify max upload size' }]}
+            name="autoDeleteAfterPublish"
+            label={<span style={{ color: 'rgba(255,255,255,0.65)' }}>Auto-Delete Videos After Publishing</span>}
+            valuePropName="checked"
           >
-            <InputNumber style={{ width: '100%' }} min={10} max={102400} />
+            <Switch checkedChildren="ON" unCheckedChildren="OFF" />
           </Form.Item>
           <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '12px', marginTop: '-12px' }}>
-            Videos larger than this configured size limit will be rejected during upload. Default is 20GB (20480 MB).
+            Automatically deletes video & thumbnail files from server storage after successfully posting to Facebook/YouTube to prevent running out of disk space.
           </p>
         </div>
       )
@@ -428,6 +428,7 @@ export const Settings: React.FC = () => {
         onFinish={onFinish}
         initialValues={{
           maxVideoSizeMb: 20480,
+          autoDeleteAfterPublish: true,
           openaiBaseUrl: 'https://api.openai.com/v1',
           openaiModel: 'gpt-4o-mini',
           googleClientId: '',
