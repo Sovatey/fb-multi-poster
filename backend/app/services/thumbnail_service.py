@@ -1,6 +1,5 @@
 import os
 import subprocess
-from PIL import Image, ImageDraw, ImageFont
 from app.utils.logger import get_logger
 
 logger = get_logger("thumbnail_service")
@@ -44,6 +43,7 @@ class ThumbnailService:
             
         # 2. Fallback to Pillow
         try:
+            from PIL import Image, ImageDraw
             # Create a 640x360 image with a gradient-like dark background
             width, height = 640, 360
             img = Image.new("RGB", (width, height), color=(18, 18, 24))
