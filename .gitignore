@@ -1,0 +1,40 @@
+# Python & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Storage & Sensitive Credentials
+backend/storage/config.json
+backend/storage/history.json
+backend/storage/scheduled.json
+backend/storage/videos/*
+!backend/storage/videos/.gitkeep
+backend/storage/thumbnails/*
+!backend/storage/thumbnails/.gitkeep
+backend/storage/logs/
+*.log
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.vite/
+frontend/*.local
+
+# IDE / System
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
