@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Form, Input, Button, Space, Tag, InputNumber, notification, Tabs, Divider, Row, Col, Switch } from 'antd';
-import { SettingOutlined, GlobalOutlined, KeyOutlined, YoutubeOutlined, DeleteOutlined, LinkOutlined } from '@ant-design/icons';
+import { SettingOutlined, GlobalOutlined, KeyOutlined, YoutubeOutlined, DeleteOutlined, LinkOutlined, SyncOutlined } from '@ant-design/icons';
 import { api, API_BASE_URL } from '../services/api';
 import type { AppConfig, FacebookPage, YouTubeChannel } from '../types';
 
@@ -51,9 +51,17 @@ export const Settings: React.FC = () => {
     const handleFocus = () => {
       fetchSettings(false);
     };
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'YOUTUBE_CONNECTED') {
+        fetchSettings(false);
+      }
+    };
+
     window.addEventListener('focus', handleFocus);
+    window.addEventListener('message', handleMessage);
     return () => {
       window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('message', handleMessage);
     };
   }, []);
 
@@ -285,7 +293,17 @@ export const Settings: React.FC = () => {
           
           <Divider style={{ borderColor: 'rgba(255,255,255,0.05)', margin: '20px 0' }} />
           
-          <h4 style={{ color: '#fff', marginBottom: '12px' }}>Connected YouTube Channels</h4>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+            <h4 style={{ color: '#fff', margin: 0 }}>Connected YouTube Channels</h4>
+            <Button 
+              size="small" 
+              icon={<SyncOutlined />} 
+              onClick={() => fetchSettings(false)}
+              style={{ color: '#a855f7', borderColor: 'rgba(168,85,247,0.3)' }}
+            >
+              Refresh List
+            </Button>
+          </div>
           
           {youtubeChannels.length === 0 ? (
             <div style={{ 

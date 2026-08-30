@@ -167,7 +167,12 @@ async def google_auth_callback(
                     <p style="font-size:18px;margin-bottom:10px;">Linked Channel: <b>{new_channel['name']}</b></p>
                     <p style="color:rgba(255,255,255,0.45);">You can now close this tab and return to the FB Multi Poster app settings.</p>
                     <script>
-                      setTimeout(() => {{ window.close(); }}, 3000);
+                      try {{
+                        if (window.opener) {{
+                          window.opener.postMessage({{ type: 'YOUTUBE_CONNECTED' }}, '*');
+                        }}
+                      }} catch (e) {{}}
+                      setTimeout(() => {{ window.close(); }}, 2500);
                     </script>
                   </body>
                 </html>
