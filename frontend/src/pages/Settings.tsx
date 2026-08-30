@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Form, Input, Button, Space, Tag, InputNumber, notification, Tabs, Divider, Row, Col, Switch } from 'antd';
+import { Card, Form, Input, Button, Space, Tag, notification, Tabs, Divider, Row, Col, Switch } from 'antd';
 import { SettingOutlined, GlobalOutlined, KeyOutlined, YoutubeOutlined, DeleteOutlined, LinkOutlined, SyncOutlined } from '@ant-design/icons';
 import { api, API_BASE_URL } from '../services/api';
 import type { AppConfig, FacebookPage, YouTubeChannel } from '../types';
