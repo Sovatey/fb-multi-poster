@@ -33,10 +33,10 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS Policy
+# CORS Policy - Allow any origin (including Vercel frontend domains)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Since it's a local single-user application, wildcards are safe and prevent CORS bugs
+    allow_origin_regex=".*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
